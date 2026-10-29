@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "RotiRapi — Bakery HPP & Profit Calculator",
+  "short_name": "RotiRapi",
+  "description": "Kalkulator HPP, resep, produksi, dan keuntungan bakery offline.",
+  "lang": "id-ID",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8f4ec",
+  "theme_color": "#f8f4ec",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icons/bread.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

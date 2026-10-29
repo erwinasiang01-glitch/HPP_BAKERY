@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f4ec">
+  <meta name="description" content="Kalkulator HPP, resep, produksi, dan keuntungan bakery yang bekerja offline.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/bread.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>RotiRapi — Bakery HPP</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="RotiRapi beranda">
+        <span class="brand-mark" aria-hidden="true">♨</span>
+        <span><strong>rotirapi</strong><small>BAKERY WORKSPACE</small></span>
+      </a>
+      <button class="icon-button" id="installBtn" hidden aria-label="Pasang aplikasi" title="Pasang aplikasi">＋</button>
+    </header>
+
+    <main>
+      <section class="page-heading">
+        <p class="eyebrow" id="todayLabel">WORKSPACE / HARI INI</p>
+        <h1>Selamat datang<br><em>di dapur usahamu.</em></h1>
+        <p class="muted">Hitung biaya dengan rapi. Tentukan harga dengan percaya diri.</p>
+      </section>
+
+      <section class="summary-grid" aria-label="Ringkasan usaha">
+        <article class="summary-card summary-dark">
+          <span class="summary-label">BAHAN TERSIMPAN</span>
+          <strong id="summaryIngredients">0</strong>
+          <span class="summary-foot">jenis bahan baku</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">RESEP AKTIF</span>
+          <strong id="summaryRecipes">0</strong>
+          <span class="summary-foot">varian produk</span>
+        </article>
+      </section>
+
+      <nav class="tabs" aria-label="Modul aplikasi">
+        <button class="tab active" data-view="ingredients"><span>01</span> Bahan baku</button>
+        <button class="tab" data-view="recipes"><span>02</span> Resep & produksi</button>
+        <button class="tab" data-view="profit"><span>03</span> HPP & profit</button>
+      </nav>
+
+      <section class="view active" id="view-ingredients">
+        <div class="section-title">
+          <div><p class="eyebrow">MASTER DATA</p><h2>Bahan baku</h2></div>
+          <button class="button button-primary" id="addIngredientBtn">＋ Tambah bahan</button>
+        </div>
+        <p class="section-intro">Catat ukuran kemasan dan harga beli. Harga satuan dihitung otomatis dan digunakan oleh resep.</p>
+        <form class="form-card" id="ingredientForm">
+          <input type="hidden" id="ingredientId">
+          <div class="form-grid">
+            <label>Nama bahan<input id="ingredientName" required placeholder="Contoh: Tepung terigu"></label>
+            <label>Kategori<select id="ingredientCategory"><option>Tepung</option><option>Pemanis</option><option>Lemak</option><option>Pengembang</option><option>Isian</option><option>Kemasan</option><option>Lainnya</option></select></label>
+            <label>Harga beli (Rp)<input id="ingredientPrice" type="number" min="0" step="1" required placeholder="15000"></label>
+            <label>Isi kemasan<input id="ingredientQty" type="number" min="0.001" step="any" required placeholder="1000"></label>
+            <label>Satuan isi<select id="ingredientUnit"><option value="g">gram (g)</option><option value="ml">mililiter (ml)</option><option value="pcs">butir / pcs</option></select></label>
+            <label>Tanggal harga<input id="ingredientDate" type="date" required></label>
+          </div>
+          <div class="unit-preview" id="unitPreview">Harga satuan: —</div>
+          <div class="form-actions"><button type="button" class="button button-quiet" id="cancelIngredientBtn">Batal</button><button class="button button-primary" type="submit">Simpan bahan</button></div>
+        </form>
+        <div class="list-heading"><h3>Daftar bahan</h3><span id="ingredientCount">0 item</span></div>
+        <div class="data-list" id="ingredientList"></div>
+        <div class="empty-state" id="ingredientEmpty"><span>✳</span><h3>Mulai dari bahan pertama</h3><p>Tambahkan bahan baku untuk menghitung biaya resep secara otomatis.</p><button class="button button-outline" id="emptyAddIngredient">Tambah bahan baku</button></div>
+      </section>
+
+      <section class="view" id="view-recipes">
+        <div class="section-title">
+          <div><p class="eyebrow">PRODUK & KOMPOSISI</p><h2>Resep & produksi</h2></div>
+          <button class="button button-primary" id="addRecipeBtn">＋ Buat resep</button>
+        </div>
+        <p class="section-intro">Simpan komposisi satu batch, tentukan hasil jadi, lalu simulasikan jumlah produksi berdasarkan ketersediaan bahan.</p>
+        <form class="form-card" id="recipeForm">
+          <input type="hidden" id="recipeId">
+          <label>Nama produk<input id="recipeName" required placeholder="Contoh: Roti manis cokelat"></label>
+          <div class="form-grid">
+            <label>Hasil jadi per batch (pcs)<input id="recipeYield" type="number" min="1" step="1" required value="20"></label>
+            <label>Biaya tambahan per batch (Rp)<input id="recipeExtra" type="number" min="0" step="1" value="0"></label>
+            <label>Target jumlah produksi (pcs)<input id="targetProduction" type="number" min="1" step="1" value="100"></label>
+          </div>
+          <div class="ingredient-editor-heading"><h3>Komposisi bahan</h3><button type="button" class="button button-quiet" id="addRecipeLineBtn">＋ Tambah baris</button></div>
+          <div id="recipeLines" class="recipe-lines"></div>
+          <div class="form-actions"><button type="button" class="button button-quiet" id="cancelRecipeBtn">Batal</button><button class="button button-primary" type="submit">Simpan resep</button></div>
+        </form>
+        <div class="simulation-card" id="simulationCard">
+          <div><p class="eyebrow">SIMULASI KEBUTUHAN</p><h3>Rencana produksi</h3><p class="muted">Pilih resep tersimpan dan masukkan target produksi untuk melihat kebutuhan bahan.</p></div>
+          <label>Resep<select id="simulationRecipe"><option value="">Pilih resep…</option></select></label>
+          <label>Target (pcs)<input id="simulationTarget" type="number" min="1" step="1" value="100"></label>
+          <button class="button button-primary" id="runSimulationBtn" type="button">Hitung kebutuhan</button>
+          <div id="simulationResult" class="simulation-result" aria-live="polite"></div>
+        </div>
+        <div class="list-heading"><h3>Resep tersimpan</h3><span id="recipeCount">0 resep</span></div>
+        <div class="data-list" id="recipeList"></div>
+        <div class="empty-state" id="recipeEmpty"><span>⌁</span><h3>Belum ada resep</h3><p>Tambahkan komposisi dan jumlah hasil jadi untuk mulai menghitung HPP.</p><button class="button button-outline" id="emptyAddRecipe">Buat resep pertama</button></div>
+      </section>
+
+      <section class="view" id="view-profit">
+        <div class="section-title">
+          <div><p class="eyebrow">ANALISIS BIAYA</p><h2>HPP & profit</h2></div>
+        </div>
+        <p class="section-intro">Pilih resep, masukkan harga jual dan biaya tambahan. Hasil dihitung berdasarkan harga bahan terbaru.</p>
+        <div class="form-card">
+          <label>Produk<select id="profitRecipe"><option value="">Pilih resep…</option></select></label>
+          <div class="form-grid">
+            <label>Harga jual per pcs (Rp)<input id="sellingPrice" type="number" min="0" step="1" value="4000"></label>
+            <label>Biaya non-bahan per batch (Rp)<input id="profitExtra" type="number" min="0" step="1" value="0"></label>
+            <label>Jumlah batch<input id="profitBatches" type="number" min="1" step="1" value="1"></label>
+          </div>
+          <div class="form-actions"><button class="button button-primary" id="calculateProfitBtn" type="button">Hitung HPP & profit</button></div>
+        </div>
+        <div class="profit-output" id="profitOutput">
+          <div class="empty-state compact"><span>↗</span><h3>Analisis akan tampil di sini</h3><p>Pilih resep dan tekan tombol hitung.</p></div>
+        </div>
+        <div class="note-card"><strong>Catatan perhitungan</strong><p>Margin dihitung dari laba dibagi omzet. Biaya non-bahan dan biaya tambahan resep dijumlahkan. Untuk analisis yang lebih akurat, masukkan biaya tenaga kerja, energi, kemasan, serta estimasi produk gagal.</p></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span class="footer-mark">♨</span>
+      <span><strong>rotirapi</strong><small>Data tersimpan di perangkat ini</small></span>
+      <div class="footer-actions"><button id="exportBtn" class="text-button">Ekspor data</button><label class="text-button import-label">Impor data<input type="file" id="importFile" accept="application/json,.json" hidden></label></div>
+    </footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
